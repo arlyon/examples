@@ -13,10 +13,9 @@ mod schema;
 use crate::schema::{create_schema, Schema};
 
 async fn graphiql() -> HttpResponse {
-    let html = graphiql_source("http://127.0.0.1:8080/graphql");
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
-        .body(html)
+        .body(graphiql_source("/graphql"))
 }
 
 async fn graphql(
