@@ -1,5 +1,6 @@
 use juniper::FieldResult;
 use juniper::RootNode;
+use actix_web::client::Client;
 
 #[derive(GraphQLEnum)]
 enum Episode {
@@ -32,11 +33,16 @@ pub struct QueryRoot;
 #[juniper::graphql_object]
 impl QueryRoot {
     async fn human(id: String) -> FieldResult<Human> {
+        let mut client = Client::default();
+        let mut response = client.get("https://ipapi.co/8.8.8.8/city").send().await?;
+        let home = std::str::from_utf8(&response.body().await?)?;
+
+
         Ok(Human {
             id,
             name: "Luke".to_owned(),
             appears_in: vec![Episode::NewHope],
-            home_planet: "Mars".to_owned(),
+            home_planet: home.to_owned(),
         })
     }
 }
